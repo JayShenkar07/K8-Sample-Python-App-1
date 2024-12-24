@@ -1,4 +1,4 @@
-name: Generate Release
+name: Generate-Release-Action
 
 on:
   workflow_dispatch:
@@ -17,11 +17,12 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
         
-      # Get the latest release tag (e.g., v0.0.14.69)
+      # Get the latest release tag or initialize the first version
       - name: Get latest release tag
         id: latest_tag
         run: |
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          # Try to get the latest tag
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.1.0")
           echo "Latest tag: $latest_tag"
           echo "latest_tag=$latest_tag" >> $GITHUB_ENV
 
