@@ -1,4 +1,4 @@
-name: Generate-Release-Action
+name: Generate Release
 
 on:
   workflow_dispatch:
@@ -41,7 +41,7 @@ jobs:
       - name: Create new tag
         run: |
           git tag ${{ env.new_version }}
-          git push origin ${{ env.new_version }}
+          git push https://x-access-token:${{ secrets.JAY_GHP_SECRET }}@github.com/${{ github.repository }} ${{ env.new_version }}
 
       # Generate release notes
       - name: Generate release notes
@@ -59,4 +59,4 @@ jobs:
           release_name: "Release ${{ env.new_version }}"
           body: ${{ env.release_notes }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.JAY_GHP_SECRET }}
