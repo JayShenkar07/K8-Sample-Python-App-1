@@ -3,7 +3,7 @@ name: Create Release
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch: # Allows manual trigger
 
 jobs:
@@ -38,13 +38,11 @@ jobs:
           echo "::set-output name=changelog::$changelog"
 
       - name: Push new tag
-        env:
-          JAY_GHP_SECRET: ${{ secrets.JAY_GHP_SECRET }}  # Use PAT
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag ${{ steps.generate_new_version.outputs.new_version }}
-          git push https://x-access-token:${{ secrets.JAY_GHP_SECRET }}@github.com/JayShenkar07/K8-Sample-Python-App-1.git --tags
+          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git --tags
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
