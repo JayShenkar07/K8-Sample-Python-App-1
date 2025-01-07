@@ -1,9 +1,15 @@
-name: test-create-release-workflow
+name: Create release
 
 on:
+  # Trigger on push to master branch
   push:
+    branches:
+      - master
     tags:
       - v*
+      
+  # Add manual trigger
+  workflow_dispatch:
 
 permissions:
   contents: write
