@@ -19,6 +19,7 @@ jobs:
       - name: Get latest release tag
         id: get_latest_release
         run: |
+          # Get the latest tag. If no tags exist, start with v0.0.0.0
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0.0")
           echo "Latest release tag: $latest_tag"
           echo "::set-output name=tag::$latest_tag"
@@ -27,8 +28,15 @@ jobs:
         id: generate_new_version
         run: |
           latest_tag="${{ steps.get_latest_release.outputs.tag }}"
-          version_numbers=(${latest_tag//./ })
-          version_numbers[3]=$((version_numbers[3]+1)) # Increment the last number
+          
+          # Strip the leading 'v' from the tag and split into an array
+          version_numbers=(${latest_tag//v/})
+          version_numbers=(${version_numbers//./ })
+
+          # Increment the last version number
+          version_numbers[3]=$((version_numbers[3]+1))
+
+          # Generate the new version tag
           new_version="v${version_numbers[0]}.${version_numbers[1]}.${version_numbers[2]}.${version_numbers[3]}"
           echo "New version: $new_version"
           echo "::set-output name=new_version::$new_version"
